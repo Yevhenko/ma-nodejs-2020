@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 const vegetables = ['potato', 'tomato', 'cucumber'];
 const fruits = ['apple', 'pineapple', 'banana'];
 

@@ -1,14 +1,16 @@
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable no-unused-vars */
 class Storage {
   constructor() {
     this.keyName = {
-      anyKey: 'keyName'
+      anyKey: 'keyName',
     };
   }
 
   list() {
-    return new Promise(res => {
+    return new Promise((res) => {
       res(Object.keys(this.keyName));
-    })
+    });
   }
 
   fetch(key) {
@@ -16,7 +18,7 @@ class Storage {
       if (!this.keyName[key]) rej();
 
       res(this.keyName[key]);
-    })
+    });
   }
 
   store(key, data) {
@@ -33,7 +35,7 @@ class Storage {
       if (this.keyName[key]) res();
 
       delete this.keyName[key];
-    })
+    });
   }
 
   storeList(data) {
@@ -42,7 +44,7 @@ class Storage {
         rej('Data is empty');
       }
 
-      data.forEach(element => {
+      data.forEach((element) => {
         const key = Object.keys(element)[0];
         this.keyName[key] = element[key];
       });
@@ -53,7 +55,7 @@ class Storage {
 
   destroyStartedWith(beginningOfKey) {
     return new Promise((res, rej) => {
-      Object.keys(this.keyName).forEach(key => {
+      Object.keys(this.keyName).forEach((key) => {
         if (key.startsWith(beginningOfKey)) {
           delete this.keyName[key];
         }
@@ -74,6 +76,4 @@ class Storage {
       res(data);
     });
   }
-
-
 }

@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-console */
 function sayAnything(time) {
-  return new Promise(res => {
+  return new Promise((res) => {
     setTimeout(() => res(), time);
   });
 }

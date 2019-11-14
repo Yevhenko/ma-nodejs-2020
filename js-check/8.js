@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 class Planet {
   constructor(name, diameter) {
     this.name = name;
@@ -14,9 +15,7 @@ class Planet {
   }
 }
 
-class Earth extends Planet {
-  
-}
+class Earth extends Planet {}
 
 const m = new Planet('Mars', 6779);
 console.log(m.getPlanetSize());

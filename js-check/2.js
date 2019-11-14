@@ -67,7 +67,7 @@ if (Array.isArray(user.phoneNumbers)) {
   console.log('not_ok');
 }
 
-user.phoneNumbers.forEach(e => {
+user.phoneNumbers.forEach((e) => {
   if (typeof e.type === 'string' && ['MOBILE', 'LINE', 'VOIP'].includes(e.type)) {
     console.log('ok');
   } else {
