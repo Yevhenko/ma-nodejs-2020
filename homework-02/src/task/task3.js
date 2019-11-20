@@ -6,8 +6,4 @@ function sayAnything(text, timer) {
   });
 }
 
-sayAnything('Hello MA', 1000).then((text) => {
-  console.log(text);
-});
-
 module.exports = sayAnything('Hello MA', 1000);
