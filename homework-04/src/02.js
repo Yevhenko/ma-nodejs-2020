@@ -2,7 +2,7 @@ function randomInteger(max) {
   return Math.floor(Math.random() * max);
 }
 
-async function throwDice(time) {
+function throwDice(time) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
