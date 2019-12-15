@@ -15,16 +15,24 @@ const inputDir = path.join(process.cwd(), inputDirName);
 const outputFile = path.join(outputDirName, outputFileName);
 
 async function getInputFileList() {
-  const files = await fsp.readdir(inputDir);
-  return files.map((file) => path.join(inputDir, file));
+  try {
+    const files = await fsp.readdir(inputDir);
+    return files.map((file) => path.join(inputDir, file));
+  } catch (err) {
+    return err;
+  }
 }
 
 async function getObjectFromFile(filePath) {
-  const compressedBuffer = await fsp.readFile(filePath);
-  const jsonBuffer = await gunzip(compressedBuffer);
-  const json = jsonBuffer.toString();
-  const object = JSON.parse(json);
-  return object;
+  try {
+    const compressedBuffer = await fsp.readFile(filePath);
+    const jsonBuffer = await gunzip(compressedBuffer);
+    const json = jsonBuffer.toString();
+    const object = JSON.parse(json);
+    return object;
+  } catch (err) {
+    return err;
+  }
 }
 
 function rebuildUrl(originalUrl) {
