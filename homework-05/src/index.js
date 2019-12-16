@@ -2,7 +2,6 @@ const path = require('path');
 const fsp = require('fs').promises;
 const zlib = require('zlib');
 const { promisify } = require('util');
-let url = require('url');
 
 const gunzip = promisify(zlib.gunzip);
 const gzip = promisify(zlib.gzip);
@@ -19,7 +18,7 @@ async function getInputFileList() {
     const files = await fsp.readdir(inputDir);
     return files.map((file) => path.join(inputDir, file));
   } catch (err) {
-    return err;
+    return console.error(err);
   }
 }
 
@@ -31,46 +30,58 @@ async function getObjectFromFile(filePath) {
     const object = JSON.parse(json);
     return object;
   } catch (err) {
-    return err;
+    return console.error(err);
   }
 }
 
 function rebuildUrl(originalUrl) {
-  url = new URL(originalUrl);
+  const newUrl = new URL(originalUrl);
 
-  const { name, ext } = path.parse(url.pathname);
+  const { name, ext } = path.parse(newUrl.pathname);
 
-  url.protocol = 'https';
-  url.searchParams.set('file', name);
-  url.searchParams.append('type', ext);
-  url.pathname = '/devices';
+  newUrl.protocol = 'https';
+  newUrl.searchParams.set('file', name);
+  newUrl.searchParams.append('type', ext);
+  newUrl.pathname = '/devices';
 
-  return url;
+  return newUrl;
 }
 
 async function buildOutputObject(files) {
-  const result = {};
-  // eslint-disable-next-line no-restricted-syntax
-  for (const file of files) {
-    // eslint-disable-next-line no-await-in-loop
-    const object = await getObjectFromFile(file);
-    object.url = rebuildUrl(object.url);
-    const name = path.basename(file.toLowerCase(), 'json.gz');
-    result[name] = object;
+  try {
+    const result = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of files) {
+      // eslint-disable-next-line no-await-in-loop
+      const object = await getObjectFromFile(file);
+      object.url = rebuildUrl(object.url);
+      const name = path.basename(file.toLowerCase(), 'json.gz');
+      result[name] = object;
+    }
+    return result;
+  } catch (error) {
+    return console.error(error);
   }
-  return result;
 }
 
 async function saveOutput(object) {
-  const buffer = Buffer.from(JSON.stringify(object));
-  const gzipFile = await gzip(buffer);
-  await fsp.writeFile(outputFile, gzipFile);
+  try {
+    const buffer = Buffer.from(JSON.stringify(object));
+    const gzipFile = await gzip(buffer);
+    await fsp.writeFile(outputFile, gzipFile);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function start() {
-  const inputFiles = await getInputFileList();
-  const outputObject = await buildOutputObject(inputFiles);
-  await saveOutput(outputObject);
+  try {
+    const inputFiles = await getInputFileList();
+    const outputObject = await buildOutputObject(inputFiles);
+    await saveOutput(outputObject);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 start()
