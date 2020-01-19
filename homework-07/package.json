@@ -25,5 +25,8 @@
       "pre-commit": "npm run lint",
       "pre-push": "npm run lint"
     }
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
   }
 }

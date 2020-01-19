@@ -1,58 +1,72 @@
 const HW = require('./recentHW');
 
-const result3 = {
-  message: 'Internal error occured',
-};
-const result1 = {
-  message: 'New value for minimum free memory limit is not valid number',
-};
-const result2 = {
-  message: 'Unauthorized',
-};
-const result5 = {
-  message: 'Filter value is not valid',
-};
-const result6 = {
-  total: `${HW().total}`,
-  message: 'OK',
-};
-const result7 = {
-  free: `${HW().free}`,
-  message: 'OK',
-};
-const result8 = {
-  allocated: `${HW().allocated}`,
-  message: 'OK',
-};
+const token = process.env.TOKEN;
 
 async function getMetricsWithFilter(req, res) {
   try {
     const {
+      headers: { authorization },
+    } = req;
+    const {
       queryParams: { filter },
     } = req;
 
+    if (authorization !== `Basic ${token}`) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          message: 'Unauthorized',
+        }),
+      );
+    }
+
     if (filter) {
-      if (['total', 'free', 'allocated'].includes(filter)) {
-        if (filter === 'total') {
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(result6));
-        } else if (filter === 'free') {
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(result7));
-        } else if (filter === 'allocated') {
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(result8));
-        }
+      if (filter === 'total') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(
+          JSON.stringify({
+            total: `${HW().total}`,
+            message: 'OK',
+          }),
+        );
       }
-    } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result5));
+
+      if (filter === 'free') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(
+          JSON.stringify({
+            free: `${HW().free}`,
+            message: 'OK',
+          }),
+        );
+      }
+
+      if (filter === 'allocated') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(
+          JSON.stringify({
+            allocated: `${HW().allocated}`,
+            message: 'OK',
+          }),
+        );
+      }
+
+      return res.end(JSON.stringify({ message: 'Filter value is not valid' }));
     }
+
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    return res.end(
+      JSON.stringify({
+        message: 'Filter value is not valid',
+      }),
+    );
   } catch (error) {
-    if (res.toString().includes(error)) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result3));
-    }
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end(
+      JSON.stringify({
+        message: 'Internal error occured',
+      }),
+    );
   }
 }
 
@@ -62,24 +76,29 @@ async function getMetrics(req, res) {
       headers: { authorization },
     } = req;
 
-    const result = HW();
-
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(result, (result.message = 'OK')));
-
-    if (authorization !== 'Basic WWV2aGVuOjEyMzQ1') {
+    if (authorization !== `Basic ${token}`) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result2));
+      return res.end(
+        JSON.stringify({
+          message: 'Unauthorized',
+        }),
+      );
     }
+
+    const memoryStatus = HW();
+
+    memoryStatus.message = 'OK';
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify(memoryStatus));
   } catch (error) {
-    if (res.toString().includes(error)) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result3));
-    }
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.endJSON.stringify({
+      message: 'Internal error occured',
+    });
   }
 }
 
-async function getLimit(req, res) {
+async function checkLimit(req, res) {
   try {
     const { body } = req;
     const { limit } = body;
@@ -92,7 +111,11 @@ async function getLimit(req, res) {
 
     if (authorization !== 'Basic WWV2aGVuOjEyMzQ1') {
       res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result2));
+      res.end(
+        JSON.stringify({
+          message: 'Unauthorized',
+        }),
+      );
     }
 
     if (typeof limit === 'number' && limit > 0) {
@@ -100,14 +123,22 @@ async function getLimit(req, res) {
       res.end(JSON.stringify(result4));
     } else {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result1));
+      res.end(
+        JSON.stringify({
+          message: 'New value for minimum free memory limit is not valid number',
+        }),
+      );
     }
   } catch (error) {
     if (error) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result3));
+      res.end(
+        JSON.stringify({
+          message: 'Internal error occured',
+        }),
+      );
     }
   }
 }
 
-module.exports = { getLimit, getMetrics, getMetricsWithFilter };
+module.exports = { checkLimit, getMetrics, getMetricsWithFilter };
