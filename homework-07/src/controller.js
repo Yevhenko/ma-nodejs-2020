@@ -105,9 +105,6 @@ async function checkLimit(req, res) {
     const {
       headers: { authorization },
     } = req;
-    const result4 = {
-      message: `Minimum free memory limit is successfully set to ${limit} MB`,
-    };
 
     if (authorization !== 'Basic WWV2aGVuOjEyMzQ1') {
       res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -120,7 +117,11 @@ async function checkLimit(req, res) {
 
     if (typeof limit === 'number' && limit > 0) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result4));
+      res.end(
+        JSON.stringify({
+          message: `Minimum free memory limit is successfully set to ${limit} MB`,
+        }),
+      );
     } else {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end(
