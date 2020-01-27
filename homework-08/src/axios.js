@@ -33,10 +33,7 @@ async function mainL() {
   }
 }
 
-mainL();
-mainM();
-
-// setInterval(() => {
-//   mainL();
-//   mainM();
-// }, 5000);
+setInterval(() => {
+  mainL();
+  mainM();
+}, 5000);
