@@ -1,6 +1,41 @@
 const HW = require('./recentHW');
 
 const token = process.env.TOKEN;
+const memoryStatus = HW();
+
+function getRandom() {
+  return Math.floor(Math.random() * 100) + 1;
+}
+
+async function getPoint(req, res) {
+  try {
+    const {
+      headers: { authorization },
+    } = req;
+
+    if (authorization !== `Basic ${token}`) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          message: 'Unauthorized',
+        }),
+      );
+    }
+
+    if (getRandom() > 30) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify(memoryStatus));
+    }
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end(
+      JSON.stringify({
+        message: 'Internal error occured',
+      }),
+    );
+  } catch (error) {
+    return error;
+  }
+}
 
 async function getMetricsWithFilter(req, res) {
   try {
@@ -85,8 +120,6 @@ async function getMetrics(req, res) {
       );
     }
 
-    const memoryStatus = HW();
-
     memoryStatus.message = 'OK';
     res.writeHead(200, { 'Content-Type': 'application/json' });
     return res.end(JSON.stringify(memoryStatus));
@@ -142,4 +175,4 @@ async function checkLimit(req, res) {
   }
 }
 
-module.exports = { checkLimit, getMetrics, getMetricsWithFilter };
+module.exports = { checkLimit, getMetrics, getMetricsWithFilter, getPoint };

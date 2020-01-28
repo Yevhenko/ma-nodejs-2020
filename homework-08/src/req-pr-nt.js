@@ -1,4 +1,5 @@
 const request = require('request-promise-native');
+require('request-promise-native-retry');
 
 const optionsMetrics = {
   method: 'GET',
@@ -21,6 +22,16 @@ const optionsLimit = {
   json: true,
 };
 
+const optionsPoint = {
+  method: 'GET',
+  url: 'http://localhost:3000/anyEndpoint',
+  headers: {
+    'Content-type': 'application/json',
+    Authorization: 'Basic WWV2aGVuOjEyMzQ1',
+  },
+  json: true,
+};
+
 async function mainL() {
   try {
     const data = await request(optionsLimit);
@@ -39,7 +50,17 @@ async function mainM() {
   }
 }
 
+async function mainP() {
+  try {
+    const data = await request(optionsPoint);
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 setInterval(() => {
+  mainP();
   mainL();
   mainM();
 }, 5000);

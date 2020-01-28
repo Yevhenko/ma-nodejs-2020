@@ -20,6 +20,13 @@ function router(req, res) {
         res.end('Not Found');
       }
       break;
+    case '/anyEndpoint':
+      if (method === 'GET') controller.getPoint(req, res);
+      else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end('Not Found');
+      }
+      break;
 
     default:
       res.writeHead(404, { 'Content-Type': 'application/json' });
