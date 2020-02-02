@@ -24,6 +24,7 @@ async function getPoint(req, res) {
 
     if (getRandom() > 30) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
+      console.log(Object.keys(res));
       return res.end(JSON.stringify(memoryStatus));
     }
     res.writeHead(500, { 'Content-Type': 'application/json' });

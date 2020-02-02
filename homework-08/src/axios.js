@@ -18,6 +18,7 @@ async function mainM() {
         Authorization: 'Basic WWV2aGVuOjEyMzQ1',
       },
     });
+
     console.log(res.data);
   } catch (error) {
     console.log(error);
@@ -35,6 +36,7 @@ async function mainL() {
       },
       data: { limit: 500 },
     });
+
     console.log(response.data);
   } catch (error) {
     console.log(error);
@@ -51,14 +53,17 @@ async function mainP() {
         Authorization: 'Basic WWV2aGVuOjEyMzQ1',
       },
     });
+
     console.log(response.data);
   } catch (error) {
     console.log(error);
   }
 }
 
-setInterval(() => {
-  mainP();
-  mainL();
-  mainM();
-}, 5000);
+module.exports = function ax() {
+  setInterval(() => {
+    mainP();
+    mainL();
+    mainM();
+  }, 5000);
+};

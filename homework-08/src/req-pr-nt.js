@@ -1,5 +1,4 @@
 const request = require('request-promise-native');
-require('request-promise-native-retry');
 
 const optionsMetrics = {
   method: 'GET',
@@ -12,8 +11,7 @@ const optionsMetrics = {
 };
 
 const optionsLimit = {
-  method: 'POST',
-  url: 'http://localhost:3000/limit?',
+  uri: 'http://localhost:3000/limit',
   headers: {
     'Content-type': 'application/json',
     Authorization: 'Basic WWV2aGVuOjEyMzQ1',
@@ -32,16 +30,16 @@ const optionsPoint = {
   json: true,
 };
 
-async function mainL() {
+async function mainLimit() {
   try {
-    const data = await request(optionsLimit);
+    const data = await request.post(optionsLimit);
     console.log(data);
   } catch (error) {
     console.log(error);
   }
 }
 
-async function mainM() {
+async function mainMetrics() {
   try {
     const data = await request(optionsMetrics);
     console.log(data);
@@ -50,17 +48,20 @@ async function mainM() {
   }
 }
 
-async function mainP() {
+async function mainPoint() {
   try {
     const data = await request(optionsPoint);
-    console.log(data);
+    console.log('POINT RESP:', data);
   } catch (error) {
-    console.log(error);
+    console.error('mainPoint error:', error.message);
+    mainPoint();
   }
 }
 
-setInterval(() => {
-  mainP();
-  mainL();
-  mainM();
-}, 5000);
+module.exports = function rpn() {
+  setInterval(() => {
+    mainPoint();
+    mainLimit();
+    mainMetrics();
+  }, 5000);
+};

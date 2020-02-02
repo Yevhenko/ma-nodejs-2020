@@ -9,17 +9,14 @@ const optionsLimit = {
     'Content-type': 'application/json',
     Authorization: 'Basic WWV2aGVuOjEyMzQ1',
   },
-  body: JSON.stringify({ limit: Number('500') }),
+  body: JSON.stringify({ limit: 500 }),
 };
 
-const postData = optionsLimit.body;
-
 // eslint-disable-next-line no-shadow
-function httpRequestL(optionsLimit) {
+function httpRequestLimit(optionsLimit) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsLimit, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding('utf8');
 
       let rawData = '';
@@ -36,7 +33,7 @@ function httpRequestL(optionsLimit) {
       reject(e);
     });
 
-    req.write(postData);
+    req.write(optionsLimit.body);
     req.end();
   });
 }
@@ -53,11 +50,10 @@ const optionsMetrics = {
 };
 
 // eslint-disable-next-line no-shadow
-function httpRequestM(optionsMetrics) {
+function httpRequestMetrics(optionsMetrics) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsMetrics, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding('utf8');
 
       let rawData = '';
@@ -90,11 +86,12 @@ const optionsPoint = {
 };
 
 // eslint-disable-next-line no-shadow
-function httpRequestP(optionsPoint) {
+function httpRequestPoint(optionsPoint) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsPoint, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+      if (res.statusCode !== 200) httpRequestPoint(optionsPoint);
+
       res.setEncoding('utf8');
 
       let rawData = '';
@@ -107,6 +104,7 @@ function httpRequestP(optionsPoint) {
         resolve(res);
       });
     });
+
     req.on('error', (e) => {
       reject(e);
     });
@@ -115,8 +113,16 @@ function httpRequestP(optionsPoint) {
   });
 }
 
-setInterval(() => {
-  httpRequestP(optionsPoint).then((res) => console.log('\nPOINT\n', res.data));
-  httpRequestM(optionsMetrics).then((res) => console.log('\nMETRICS\n', res.data));
-  httpRequestL(optionsLimit).then((res) => console.log('\nLIMIT\n', res.data));
-}, 5000);
+module.exports = function httpCL() {
+  setInterval(() => {
+    httpRequestPoint(optionsPoint).then((res) =>
+      console.log('POINT\n', JSON.parse(res.data), '\n'),
+    );
+    httpRequestMetrics(optionsMetrics).then((res) =>
+      console.log('METRICS: \n', JSON.parse(res.data), '\n'),
+    );
+    httpRequestLimit(optionsLimit).then((res) =>
+      console.log('LIMIT\n', JSON.parse(res.data), '\n'),
+    );
+  }, 5000);
+};
