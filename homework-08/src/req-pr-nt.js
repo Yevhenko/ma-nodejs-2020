@@ -54,7 +54,13 @@ async function mainPoint() {
     console.log('POINT RESP:', data);
   } catch (error) {
     console.error('mainPoint error:', error.message);
-    mainPoint();
+
+    for (let count = 1; count < 30; count += 1) {
+      setTimeout(() => {
+        mainPoint();
+      }, 100 * 2 ** count);
+      break;
+    }
   }
 }
 

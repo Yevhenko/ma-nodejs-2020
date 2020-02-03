@@ -90,7 +90,15 @@ function httpRequestPoint(optionsPoint) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsPoint, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
-      if (res.statusCode !== 200) httpRequestPoint(optionsPoint);
+
+      for (let count = 1; count < 30; count += 1) {
+        if (res.statusCode !== 200) {
+          setTimeout(() => {
+            httpRequestPoint(optionsPoint);
+          }, 100 * 2 ** count);
+        }
+        break;
+      }
 
       res.setEncoding('utf8');
 
