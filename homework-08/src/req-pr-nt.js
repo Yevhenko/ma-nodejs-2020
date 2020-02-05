@@ -33,7 +33,7 @@ const optionsPoint = {
 async function mainLimit() {
   try {
     const data = await request.post(optionsLimit);
-    console.log(data);
+    console.log('Limit:', data);
   } catch (error) {
     console.log(error);
   }
@@ -42,7 +42,7 @@ async function mainLimit() {
 async function mainMetrics() {
   try {
     const data = await request(optionsMetrics);
-    console.log(data);
+    console.log('Metrics:', data);
   } catch (error) {
     console.log(error);
   }

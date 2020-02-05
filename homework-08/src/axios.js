@@ -19,7 +19,7 @@ async function mainM() {
       },
     });
 
-    console.log(res.data);
+    console.log('Metrics:', res.data);
   } catch (error) {
     console.log(error);
   }
@@ -37,7 +37,7 @@ async function mainL() {
       data: { limit: 500 },
     });
 
-    console.log(response.data);
+    console.log('Limit:', response.data);
   } catch (error) {
     console.log(error);
   }
@@ -54,9 +54,9 @@ async function mainP() {
       },
     });
 
-    console.log(response.data);
+    console.log('Point:', response.status, response.data);
   } catch (error) {
-    console.log(error);
+    console.error('mainPoint error:', error.message);
   }
 }
 
