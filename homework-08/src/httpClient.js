@@ -1,5 +1,7 @@
 const http = require('http');
 
+let count = 0;
+
 const optionsLimit = {
   hostname: 'localhost',
   port: 3000,
@@ -17,6 +19,16 @@ function httpRequestLimit(optionsLimit) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsLimit, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
+      if (res.statusCode !== 200) {
+        count += 1;
+
+        setTimeout(() => {
+          httpRequestLimit(optionsLimit, count);
+        }, 100 * 2 ** count);
+
+        if (count > 5) console.log('ERROR!!!');
+      }
+
       res.setEncoding('utf8');
 
       let rawData = '';
@@ -54,6 +66,17 @@ function httpRequestMetrics(optionsMetrics) {
   return new Promise((resolve, reject) => {
     const req = http.request(optionsMetrics, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
+
+      if (res.statusCode !== 200) {
+        count += 1;
+
+        setTimeout(() => {
+          httpRequestMetrics(optionsMetrics, count);
+        }, 100 * 2 ** count);
+
+        if (count > 5) console.log('ERROR!!!');
+      }
+
       res.setEncoding('utf8');
 
       let rawData = '';
@@ -91,13 +114,14 @@ function httpRequestPoint(optionsPoint) {
     const req = http.request(optionsPoint, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
 
-      for (let count = 1; count < 30; count += 1) {
-        if (res.statusCode !== 200) {
-          setTimeout(() => {
-            httpRequestPoint(optionsPoint);
-          }, 100 * 2 ** count);
-        }
-        break;
+      if (res.statusCode !== 200) {
+        count += 1;
+
+        setTimeout(() => {
+          httpRequestPoint(optionsPoint, count);
+        }, 100 * 2 ** count);
+
+        if (count > 5) console.log('ERROR!!!');
       }
 
       res.setEncoding('utf8');

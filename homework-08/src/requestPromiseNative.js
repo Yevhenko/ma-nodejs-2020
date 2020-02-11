@@ -1,5 +1,7 @@
 const request = require('request-promise-native');
 
+let count = 0;
+
 const optionsMetrics = {
   method: 'GET',
   url: 'http://localhost:3000/metrics?filter=total',
@@ -35,7 +37,16 @@ async function mainLimit() {
     const data = await request.post(optionsLimit);
     console.log('Limit:', data);
   } catch (error) {
-    console.log(error);
+    console.error(error.message);
+
+    if (count < 30) {
+      setTimeout(() => {
+        mainLimit();
+      }, 100 * 2 ** count);
+      count += 1;
+    } else {
+      console.error('ERROR!!!');
+    }
   }
 }
 
@@ -44,7 +55,16 @@ async function mainMetrics() {
     const data = await request(optionsMetrics);
     console.log('Metrics:', data);
   } catch (error) {
-    console.log(error);
+    console.error(error.message);
+
+    if (count < 30) {
+      setTimeout(() => {
+        mainMetrics();
+      }, 100 * 2 ** count);
+      count += 1;
+    } else {
+      console.error('ERROR!!!');
+    }
   }
 }
 
@@ -55,11 +75,13 @@ async function mainPoint() {
   } catch (error) {
     console.error('mainPoint error:', error.message);
 
-    for (let count = 1; count < 30; count += 1) {
+    if (count < 30) {
       setTimeout(() => {
         mainPoint();
       }, 100 * 2 ** count);
-      break;
+      count += 1;
+    } else {
+      console.error('ERROR!!!');
     }
   }
 }

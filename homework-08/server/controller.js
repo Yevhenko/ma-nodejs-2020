@@ -22,7 +22,7 @@ async function getPoint(req, res) {
       );
     }
 
-    if (getRandom() > 30) {
+    if (getRandom() > 101) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       console.log(Object.keys(res));
       return res.end(JSON.stringify(memoryStatus));
@@ -140,7 +140,7 @@ async function checkLimit(req, res) {
       headers: { authorization },
     } = req;
 
-    if (authorization !== 'Basic WWV2aGVuOjEyMzQ1') {
+    if (authorization !== `Basic ${token}`) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(
         JSON.stringify({

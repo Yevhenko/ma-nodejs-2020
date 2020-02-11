@@ -1,25 +1,26 @@
 const cli = require('vorpal')();
 
-const httpCL = require('./httpClient');
-const rpn = require('./req-pr-nt');
-const ax = require('./axios');
+const httpClient = require('./httpClient');
+
+const requestPromiseNative = require('./requestPromiseNative');
+const axios = require('./axios');
 
 console.clear();
 console.log('Make your choice of the client');
 
-cli.command('http', 'Outputs "httpClient"').action(() => {
-  console.log('You have chosen http-client');
-  httpCL();
+cli.command('httpClient', 'Outputs "httpClient"').action(() => {
+  console.log('You have chosen httpClient');
+  httpClient();
 });
 
-cli.command('rpn', 'Outputs "req-pr-nt"').action(() => {
-  console.log('You have chosen rpn-client');
-  rpn();
+cli.command('requestPromiseNative', 'Outputs "requestPromiseNative"').action(() => {
+  console.log('You have chosen requestPromiseNative');
+  requestPromiseNative();
 });
 
 cli.command('axios', 'Outputs "axios"').action(() => {
   console.log('You have chosen axios');
-  ax();
+  axios();
 });
 
 cli.delimiter('$').show();
