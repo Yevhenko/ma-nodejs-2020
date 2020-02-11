@@ -2,7 +2,7 @@
   "name": "image-sender",
   "version": "1.0.1",
   "author": "Grumpy Coder",
-  "main": "./src/index.js",
+  "main": "./src/server/index.js",
   "scripts": {
     "start": "node ./src",
     "test": "jest",
