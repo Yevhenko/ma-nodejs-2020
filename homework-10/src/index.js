@@ -9,8 +9,6 @@ async function newUser(client, login, password, token) {
     ) values ($1, $2, $3)`,
     [login, password, token],
   );
-
-  console.log(query);
 }
 
 async function deleteUser(client, login) {
@@ -19,8 +17,6 @@ async function deleteUser(client, login) {
     where "login" = $1`,
     [login],
   );
-
-  console.log('deleted user:', query);
 }
 
 async function updateUser(client, login, password) {
@@ -30,7 +26,6 @@ async function updateUser(client, login, password) {
     [login, password],
   );
 
-  console.log(query);
 }
 
 async function selectUser(client, token) {
@@ -39,7 +34,6 @@ async function selectUser(client, token) {
     where "token" = $1`,
     [token],
   );
-
   console.log('Select:', rows);
 }
 
